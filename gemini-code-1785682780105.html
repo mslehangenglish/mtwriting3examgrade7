@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài Kiểm Tra Tiếng Anh Tương Tác - Ms Lê Hằng English</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================
+       1. GIAO DIỆN NỀN LOANG & HỌA TIẾT SVG
+       ========================================== */
+    :root {
+      --primary-purple: #8854C0;
+      --accent-yellow: #FDCB6E;
+      --accent-teal: #00C9A7;
+      --correct-green: #00D26A;
+      --wrong-red: #FF4757;
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --text-dark: #2D3436;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Quicksand', 'Nunito', sans-serif;
+      min-height: 100vh;
+      color: var(--text-dark);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px 10px;
+      position: relative;
+      overflow-x: hidden;
+      
+      /* Linear gradient loang mượt chuyển động liên tục */
+      background: linear-gradient(-45deg, #8854C0, #FDCB6E, #00C9A7, #FF7675, #6C5CE7);
+      background-size: 400% 400%;
+      animation: gradientSmooth 15s ease infinite;
+    }
+
+    @keyframes gradientSmooth {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Họa tiết SVG lơ lửng trên nền loang */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.28;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 100 100"><path fill="%23FFF" d="M25,10 L29,20 L40,20 L31,27 L34,38 L25,31 L16,38 L19,27 L10,20 L21,20 Z"/><circle cx="75" cy="25" r="7" fill="%23FFF"/><path fill="%23FFF" d="M70,75 C70,70 80,70 80,75 C85,75 85,85 80,85 C80,90 70,90 70,85 C65,85 65,75 70,75 Z"/><path fill="%23FFF" d="M20,70 Q25,60 30,70 T40,70 T30,80 T20,70 Z"/><path fill="%23FFF" d="M80,15 C82,10 88,10 90,15 C95,17 95,23 90,25 C88,30 82,30 80,25 C75,23 75,17 80,15 Z"/></svg>');
+      background-size: 140px 140px;
+      animation: floatPattern 22s linear infinite;
+    }
+
+    @keyframes floatPattern {
+      from { background-position: 0 0; }
+      to { background-position: 500px 1000px; }
+    }
+
+    /* ==========================================
+       2. BỐ CỤC CHÍNH (CONTAINER)
+       ========================================== */
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 820px;
+      background: var(--card-bg);
+      border-radius: 28px;
+      padding: 25px 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.22), 0 0 0 8px rgba(255,255,255,0.45);
+      backdrop-filter: blur(12px);
+    }
+
+    .teacher-header {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .teacher-header h5 {
+      font-size: 0.95rem;
+      color: var(--primary-purple);
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      background: #E8D8F8;
+      display: inline-block;
+      padding: 5px 18px;
+      border-radius: 20px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.06);
+    }
+
+    .alert-banner {
+      background: #FFF9DB;
+      border: 3px dashed #FCC419;
+      border-radius: 18px;
+      padding: 14px 20px;
+      margin-bottom: 25px;
+      text-align: center;
+      color: #D9480F;
+      font-weight: 700;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .alert-banner .title {
+      font-size: 1.05rem;
+      font-weight: 900;
+      display: block;
+      margin-bottom: 4px;
+      color: #E65100;
+    }
+
+    .alert-banner .highlight {
+      color: #D32F2F;
+      text-decoration: underline;
+      font-style: italic;
+    }
+
+    .progress-box {
+      margin-bottom: 25px;
+      background: #E9ECEF;
+      border-radius: 14px;
+      height: 20px;
+      overflow: hidden;
+      position: relative;
+      border: 2px solid #CED4DA;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00C9A7, #00D26A);
+      transition: width 0.4s ease;
+    }
+
+    /* ==========================================
+       3. THẺ CÂU HỎI & NÚT LỰA CHỌN 3D
+       ========================================== */
+    .section-heading {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--primary-purple);
+      margin: 15px 0 20px 0;
+      padding: 12px 16px;
+      background: #F1F3F5;
+      border-radius: 14px;
+      border-left: 5px solid var(--primary-purple);
+      line-height: 1.5;
+    }
+
+    .question-card {
+      background: #FFFFFF;
+      border-radius: 22px;
+      padding: 22px;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+      border: 2px solid #E9ECEF;
+      transition: transform 0.2s ease;
+    }
+
+    .question-title {
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: #2D3436;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-btn {
+      background: #F8F9FA;
+      border: 2px solid #E9ECEF;
+      border-bottom: 5px solid #CED4DA;
+      border-radius: 18px;
+      padding: 14px 20px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #495057;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: inherit;
+    }
+
+    .option-btn:hover:not(.disabled) {
+      transform: scale(1.01) translateY(-2px);
+      border-color: #B2BEC3;
+      background: #FFFFFF;
+    }
+
+    .option-btn:active:not(.disabled) {
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+    }
+
+    .option-btn.correct {
+      background-color: #D4EDDA !important;
+      border-color: var(--correct-green) !important;
+      border-bottom-color: #27AE60 !important;
+      color: #155724 !important;
+    }
+
+    .option-btn.wrong {
+      background-color: #F8D7DA !important;
+      border-color: var(--wrong-red) !important;
+      border-bottom-color: #C0392B !important;
+      color: #721C24 !important;
+      animation: shake 0.4s ease;
+    }
+
+    .option-btn.disabled {
+      cursor: default;
+      opacity: 0.9;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    /* ==========================================
+       4. KHUNG GIẢI THÍCH CHI TIẾT 4 BƯỚC
+       ========================================== */
+    .explanation-box {
+      display: none;
+      margin-top: 18px;
+      background: #F8F9FA;
+      border: 2px dashed var(--primary-purple);
+      border-left: 6px solid var(--primary-purple);
+      border-radius: 14px;
+      padding: 16px 20px;
+      font-size: 0.93rem;
+      line-height: 1.65;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .explanation-box .exp-title {
+      font-weight: 800;
+      color: var(--primary-purple);
+      font-size: 1rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .explanation-box .step {
+      margin-bottom: 8px;
+    }
+
+    .explanation-box ul {
+      margin-left: 22px;
+      margin-bottom: 8px;
+    }
+
+    .explanation-box ul li {
+      margin-bottom: 3px;
+    }
+
+    .explanation-box .highlight-green {
+      color: #27AE60;
+      font-weight: 700;
+    }
+
+    /* ==========================================
+       5. NÚT NỘP BÀI VÀ POPUP KẾT QUẢ
+       ========================================== */
+    .submit-container {
+      text-align: center;
+      margin-top: 35px;
+      margin-bottom: 15px;
+    }
+
+    .submit-btn {
+      background: linear-gradient(180deg, #00C9A7 0%, #00B894 100%);
+      color: white;
+      border: none;
+      border-bottom: 6px solid #008F68;
+      border-radius: 22px;
+      padding: 16px 50px;
+      font-size: 1.25rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(0,201,167,0.35);
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(0,201,167,0.45);
+    }
+
+    .submit-btn:active {
+      transform: translateY(3px);
+      border-bottom-width: 2px;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 26px;
+      padding: 32px;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-score {
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--primary-purple);
+      margin: 15px 0;
+    }
+
+    .modal-feedback {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #2D3436;
+      margin-bottom: 25px;
+      background: #F8F9FA;
+      padding: 16px;
+      border-radius: 18px;
+      border: 2px dashed #B2BEC3;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: var(--primary-purple);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="container">
+    <div class="teacher-header">
+      <h5>Giáo viên tạo: Ms Lê Hằng English</h5>
+    </div>
+
+    <div class="alert-banner">
+      <span class="title">⚠️ LỜI NHẮC CỰC KỲ QUAN TRỌNG ⚠️</span>
+      Chỉ có đọc kỹ giải thích ngay sau mỗi câu, sau đó ghi lại từ vựng/cấu trúc mới vào vở để học thì mới thực sự giỏi lên.<br>
+      Làm cho xong mà không đọc giải thích hay đọc qua loa không ghi chép thì chỉ tốn thời gian vô ích!<br>
+      <span class="highlight">* Kéo tới đâu, làm tới đó! *</span>
+    </div>
+
+    <div class="progress-box">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <div class="section-heading">
+      Choose the sentence (A, B, C or D) that is closest in meaning to the root sentence or best combines the two given sentences.
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div class="submit-container">
+      <button class="submit-btn" onclick="submitQuiz()">NỘP BÀI KIỂM TRA 🚀</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="result-modal">
+    <div class="modal-content">
+      <h2 style="color: var(--primary-purple);">🎉 KẾT QUẢ BÀI THI 🎉</h2>
+      <div class="modal-score" id="modal-score-text">0 / 0</div>
+      <div class="modal-feedback" id="modal-feedback-text"></div>
+      <button class="close-btn" onclick="closeModal()">Xem lại đáp án chi tiết</button>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================
+       1. CƠ SỞ DỮ LIỆU CÁC CÂU HỎI TRONG ẢNH (26-30)
+       ========================================== */
+    const quizData = [
+      {
+        id: 26,
+        qNumber: 26,
+        question: "26. Da Nang is peaceful and beautiful. Nha Trang is peaceful and beautiful.",
+        options: [
+          { letter: "A", text: "Both Da Nang and Nha Trang are peaceful and beautiful." },
+          { letter: "B", text: "Da Nang is different from Nha Trang because Da Nang is more beautiful and peaceful." },
+          { letter: "C", text: "Da Nang is not as beautiful and peaceful as Nha Trang." },
+          { letter: "D", text: "Da Nang and Nha Trang are peaceful and beautiful either." }
+        ],
+        correct: "A",
+        explanation: {
+          step1: "Dịch câu hỏi: 'Đà Nẵng thanh bình và đẹp. Nha Trang thanh bình và đẹp.'",
+          step2: [
+            "A. Both Da Nang and Nha Trang are peaceful and beautiful. (Cả Đà Nẵng và Nha Trang đều thanh bình và đẹp).",
+            "B. Da Nang is different from Nha Trang... (Đà Nẵng khác Nha Trang vì Đà Nẵng đẹp và thanh bình hơn -> Sai nghĩa).",
+            "C. Da Nang is not as beautiful... (Đà Nẵng không đẹp và thanh bình bằng Nha Trang -> Sai nghĩa).",
+            "D. ...peaceful and beautiful either. (Sai cấu trúc ngữ pháp vì 'either' đứng cuối câu phủ định)."
+          ],
+          step3: "Tại sao chọn A? Cấu trúc 'Both A and B + V(số nhiều)' dùng để kết hợp hai đối tượng có cùng tính chất.",
+          step4: "Loại B, C vì làm sai lệch ý nghĩa gốc; loại D vì dùng sai từ 'either'."
+        }
+      },
+      {
+        id: 27,
+        qNumber: 27,
+        question: "27. It rained heavily this morning. Luyen was late for school.",
+        options: [
+          { letter: "A", text: "Because Luyen was late for school, it rained heavily this morning." },
+          { letter: "B", text: "It rained heavily this morning as Luyen was late for school." },
+          { letter: "C", text: "Luyen was late for school this morning because it rained heavily." },
+          { letter: "D", text: "Luyen was late for school so it rained heavily this morning." }
+        ],
+        correct: "C",
+        explanation: {
+          step1: "Dịch câu hỏi: 'Sáng nay trời mưa rất to. Luyện bị trễ học.'",
+          step2: [
+            "A. Because Luyen was late... (Vì Luyện trễ học nên sáng nay trời mưa to -> Sai nguyên nhân - kết quả).",
+            "B. It rained heavily... as Luyen was late... (Trời mưa to vì Luyện trễ học -> Sai nguyên nhân - kết quả).",
+            "C. Luyen was late for school this morning because it rained heavily. (Luyện bị trễ học sáng nay vì trời mưa rất to -> Đúng hoàn toàn).",
+            "D. ...so it rained... (Dùng từ liên kết 'so' bị ngược vế nguyên nhân - kết quả)."
+          ],
+          step3: "Tại sao chọn C? Hành động 'trời mưa to' là nguyên nhân, 'bị trễ học' là kết quả. Cấu trúc: 'Mệnh đề kết quả + because + Mệnh đề nguyên nhân'.",
+          step4: "Loại A, B, D vì tất cả đều bị đảo ngược mối quan hệ nguyên nhân - kết quả rất phi lý."
+        }
+      },
+      {
+        id: 28,
+        qNumber: 28,
+        question: "28. Dancing is as healthy and interesting as singing.",
+        options: [
+          { letter: "A", text: "Dancing is healthier and interesting as singing." },
+          { letter: "B", text: "Singing is different from dancing and more interesting." },
+          { letter: "C", text: "Dancing is healthy and interesting and singing is too." },
+          { letter: "D", text: "Singing and dancing are not very healthy and interesting." }
+        ],
+        correct: "C",
+        explanation: {
+          step1: "Dịch câu hỏi: 'Nhảy múa thì lành mạnh và thú vị bằng ca hát.'",
+          step2: [
+            "A. ...healthier and interesting as... (Sai cấu trúc so sánh).",
+            "B. ...different from... and more interesting. (Ca hát khác nhảy múa và thú vị hơn -> Sai nghĩa gốc).",
+            "C. Dancing is healthy and interesting and singing is too. (Nhảy múa lành mạnh và thú vị, và ca hát cũng vậy -> Đúng nghĩa).",
+            "D. ...are not very... (Ca hát và nhảy múa không lành mạnh và thú vị lắm -> Trái ngược nghĩa gốc)."
+          ],
+          step3: "Tại sao chọn C? Câu gốc dùng so sánh bằng 'as...as' nghĩa là cả nhảy múa và ca hát đều có cùng đặc tính. Cấu trúc 'and S + V + too' thể hiện sự đồng tán thành.",
+          step4: "Loại A sai ngữ pháp; loại B, D làm sai lệch ý nghĩa của câu gốc."
+        }
+      },
+      {
+        id: 29,
+        qNumber: 29,
+        question: "29. Photography is more expensive and time-consuming than dancing",
+        options: [
+          { letter: "A", text: "Dancing is as expensive and time-consuming as photography" },
+          { letter: "B", text: "Dancing is not as expensive and time-consuming as photography." },
+          { letter: "C", text: "Photography is the same as dancing." },
+          { letter: "D", text: "Dancing is the best." }
+        ],
+        correct: "B",
+        explanation: {
+          step1: "Dịch câu hỏi: 'Nhiếp ảnh đắt đỏ và tốn thời gian hơn nhảy múa.'",
+          step2: [
+            "A. Dancing is as expensive... (Nhảy múa đắt đỏ và tốn thời gian bằng nhiếp ảnh -> Sai nghĩa).",
+            "B. Dancing is not as expensive and time-consuming as photography. (Nhảy múa không đắt đỏ và tốn thời gian bằng nhiếp ảnh -> Đúng hoàn toàn).",
+            "C. Photography is the same as dancing. (Nhiếp ảnh giống như nhảy múa -> Sai nghĩa).",
+            "D. Dancing is the best. (Nhảy múa là tốt nhất -> Sai nghĩa)."
+          ],
+          step3: "Tại sao chọn B? Chuyển từ So sánh hơn [A > B] sang So sánh không bằng dạng phủ định [B < A]: 'S + be + not as + adj + as + ...'.",
+          step4: "Loại A, C, D vì không phản ánh đúng mối quan hệ so sánh hơn ở câu gốc."
+        }
+      },
+      {
+        id: 30,
+        qNumber: 30,
+        question: "30. Tim is better at English than Susan.",
+        options: [
+          { letter: "A", text: "Susan is not as well at English as Tim." },
+          { letter: "B", text: "Susan is not so good at English as Tim." },
+          { letter: "C", text: "Tim is as good at English as Susan." },
+          { letter: "D", text: "Tim is as goodly at English as Susan." }
+        ],
+        correct: "B",
+        explanation: {
+          step1: "Dịch câu hỏi: 'Tim giỏi tiếng Anh hơn Susan.'",
+          step2: [
+            "A. ...not as well at... (Sai vì sau to-be 'is' trong cụm 'be good at' phải dùng tính từ 'good', không dùng trạng từ 'well').",
+            "B. Susan is not so good at English as Tim. (Susan không giỏi tiếng Anh bằng Tim -> Đúng cấu trúc ngữ pháp và ý nghĩa).",
+            "C. Tim is as good... (Tim giỏi tiếng Anh bằng Susan -> Sai nghĩa).",
+            "D. ...goodly... (Sai từ vựng vì không tồn tại từ 'goodly' trong trường hợp này)."
+          ],
+          step3: "Tại sao chọn B? Chuyển từ So sánh hơn (better at) sang So sánh không bằng dạng phủ định [S + be + not so/as + adj + at + N + as + O].",
+          step4: "Loại A dùng sai từ loại ('well'); loại C sai nghĩa; loại D sai từ vựng."
+        }
+      }
+    ];
+
+    /* ==========================================
+       2. TẠO ÂM THANH BẰNG WEB AUDIO API
+       ========================================== */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'correct') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } else {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(110, audioCtx.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.25);
+      }
+    }
+
+    /* ==========================================
+       3. HIỆU ỨNG PHÁO GIẤY (CONFETTI)
+       ========================================== */
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const pieces = [];
+      const colors = ['#8854C0', '#FDCB6E', '#00C9A7', '#FF7675', '#00D26A', '#6C5CE7'];
+
+      for (let i = 0; i < 90; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          size: Math.random() * 9 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speed: Math.random() * 4 + 2,
+          rotation: Math.random() * 360
+        });
+      }
+
+      let animationFrame;
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.y += p.speed;
+          p.rotation += 2;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+
+        if (pieces.some(p => p.y < canvas.height)) {
+          animationFrame = requestAnimationFrame(render);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(animationFrame);
+        }
+      }
+      render();
+    }
+
+    /* ==========================================
+       4. THUẬT TOÁN HẠN CHẾ XÁO TRỘN CÂU HỎI
+       (GIỮ NGUYÊN THỨ TỰ 26 -> 30)
+       ========================================== */
+    let userAnswers = {};
+
+    // Thuật toán shuffle chỉ dùng cho các ĐÁP ÁN ABCD
+    function shuffle(array) {
+      let currentIndex = array.length, randomIndex;
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+      }
+      return array;
+    }
+
+    function renderQuiz() {
+      const quizContainer = document.getElementById('quiz-container');
+      quizContainer.innerHTML = '';
+
+      // GIỮ NGUYÊN THỨ TỰ CÂU HỎI (KHÔNG SHUFFLE QUIZDATA)
+      quizData.forEach(q => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        card.id = `q-card-${q.id}`;
+
+        // Chỉ xáo trộn ngẫu nhiên vị trí hiển thị ABCD
+        const shuffledOptions = shuffle([...q.options]);
+
+        let optionsHTML = '<div class="options-grid">';
+        shuffledOptions.forEach(opt => {
+          optionsHTML += `
+            <button class="option-btn" 
+                    id="btn-${q.id}-${opt.letter}" 
+                    onclick="selectAnswer(${q.id}, '${opt.letter}', '${q.correct}')">
+              <strong>${opt.letter}.</strong> ${opt.text}
+            </button>
+          `;
+        });
+        optionsHTML += '</div>';
+
+        let expStepsHTML = '';
+        if (q.explanation.step2 && Array.isArray(q.explanation.step2)) {
+          expStepsHTML = '<ul>' + q.explanation.step2.map(item => `<li>${item}</li>`).join('') + '</ul>';
+        }
+
+        const explanationHTML = `
+          <div class="explanation-box" id="exp-${q.id}">
+            <div class="exp-title">💡 PHẦN GIẢI THÍCH CHI TIẾT TỪ MS LÊ HẰNG:</div>
+            <div class="step"><strong>1. Phân tích & Dịch nghĩa câu hỏi:</strong> ${q.explanation.step1}</div>
+            ${expStepsHTML}
+            <div class="step"><strong class="highlight-green">2. Tại sao chọn đáp án đúng?</strong> ${q.explanation.step3}</div>
+            <div class="step"><strong>3. Phân tích lỗi sai các đáp án còn lại:</strong> ${q.explanation.step4}</div>
+          </div>
+        `;
+
+        card.innerHTML = `
+          <div class="question-title">${q.question}</div>
+          ${optionsHTML}
+          ${explanationHTML}
+        `;
+
+        quizContainer.appendChild(card);
+      });
+    }
+
+    function selectAnswer(qId, selectedLetter, correctLetter) {
+      if (userAnswers[qId]) return;
+
+      userAnswers[qId] = selectedLetter;
+
+      const isCorrect = (selectedLetter === correctLetter);
+      const selectedBtn = document.getElementById(`btn-${qId}-${selectedLetter}`);
+      const correctBtn = document.getElementById(`btn-${qId}-${correctLetter}`);
+      const expBox = document.getElementById(`exp-${qId}`);
+
+      const allBtns = document.querySelectorAll(`#q-card-${qId} .option-btn`);
+      allBtns.forEach(btn => btn.classList.add('disabled'));
+
+      if (isCorrect) {
+        selectedBtn.classList.add('correct');
+        playSound('correct');
+        triggerConfetti();
+      } else {
+        selectedBtn.classList.add('wrong');
+        correctBtn.classList.add('correct');
+        playSound('wrong');
+      }
+
+      if (expBox) {
+        expBox.style.display = 'block';
+      }
+
+      updateProgressBar();
+    }
+
+    function updateProgressBar() {
+      const answeredCount = Object.keys(userAnswers).length;
+      const totalCount = quizData.length;
+      const percentage = (answeredCount / totalCount) * 100;
+      document.getElementById('progress-bar').style.width = percentage + '%';
+    }
+
+    /* ==========================================
+       5. LOGIC CHẤM ĐIỂM & TỔNG KẾT
+       ========================================== */
+    function submitQuiz() {
+      let score = 0;
+      const total = quizData.length;
+
+      quizData.forEach(q => {
+        if (userAnswers[q.id] === q.correct) {
+          score++;
+        }
+      });
+
+      const percentage = (score / total) * 100;
+      let feedback = "";
+
+      if (percentage < 50) {
+        feedback = "Điểm lần này chưa cao lắm, con cố gắng đọc kỹ giải thích đáp án và làm lại nha. Cô tin con sẽ làm tốt hơn ở lần sau!";
+      } else if (percentage <= 80) {
+        feedback = "Con đã có tiến bộ khá ổn rồi, con cố gắng đọc kỹ giải thích đáp án và làm lại nha. Cô tin con sẽ làm tốt hơn ở lần sau!";
+      } else {
+        feedback = "Làm tốt lắm, con cố gắng ring điểm 10 ở lần sau nha!";
+        triggerConfetti();
+      }
+
+      document.getElementById('modal-score-text').innerText = `${score} / ${total}`;
+      document.getElementById('modal-feedback-text').innerText = feedback;
+      document.getElementById('result-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('result-modal').style.display = 'none';
+    }
+
+    window.onload = function() {
+      renderQuiz();
+    };
+  </script>
+</body>
+</html>
